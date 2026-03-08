@@ -30,10 +30,7 @@ export default function LandingPage() {
       <main className="flex-1 flex flex-col items-center">
         {/* 2. Hero Section */}
         <section className="w-full max-w-5xl px-6 pt-24 pb-16 text-center flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold mb-8">
-            <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-            New: v2.0 is now live
-          </div>
+          
           
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl">
             Real-time collaboration <br className="hidden md:block" /> for modern teams.
@@ -47,9 +44,7 @@ export default function LandingPage() {
             <Link href="/signup">
               <Button size="lg" className="w-full sm:w-auto">Get Started</Button>
             </Link>
-            <Link href="/demo">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white">View Demo</Button>
-            </Link>
+            
           </div>
         </section>
 
@@ -66,7 +61,7 @@ export default function LandingPage() {
             {/* Fake Grid */}
             <div className="flex-1 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p className="text-slate-400 font-medium">App Interface Mockup Goes Here</p>
+              <img src="/mockz.png" alt="mockz" className="w-96 h-auto" />
             </div>
           </div>
         </section>

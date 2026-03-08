@@ -1,7 +1,13 @@
+import { auth } from "@/src/lib/auth";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { Grid } from "@/src/components/editor/Grid";
 import { Button } from "@/src/components/common/Button";
 import { Logo } from "@/src/components/common/Logo";
+import { FormulaBar } from "@/src/components/editor/FormulaBar";
+import { Toolbar } from "@/src/components/editor/Toolbar";
+import { TitleInput } from "@/src/components/editor/TitleInput";
+import { Presence } from "@/src/components/editor/Presence";
 import { 
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon,
@@ -10,7 +16,19 @@ import {
   UserCircleIcon
 } from "@heroicons/react/24/outline";
 
-export default function DocumentEditorPage({ params }: { params: { id: string } }) {
+export default async function DocumentEditorPage({ params }: { params: { id: string } }) {
+  const { id } = await params;
+  // 1. Fetch the active session securely on the server
+  const session = await auth.api.getSession({
+    headers: await headers(), 
+  });
+  const user = session?.user;
+
+  // 2. Extract initials
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().substring(0, 2)
+    : "??";
+
   // In a real app, we would fetch the document title using params.id
   const docTitle = "Q4 Financial Report";
 
@@ -29,12 +47,7 @@ export default function DocumentEditorPage({ params }: { params: { id: string } 
           
           <div className="w-px h-6 bg-slate-300 hidden sm:block" />
           
-          <input 
-            type="text" 
-            defaultValue={docTitle}
-            // Added mt-0.5 to nudge it down slightly, made it a bit wider
-            className="font-medium text-slate-900 text-base px-2 py-1 mt-0.5 border border-transparent hover:border-slate-300 focus:border-blue-500 rounded-md outline-none transition-colors w-full max-w-[220px]"
-          />
+          <TitleInput currentId={id} />
         </div>
 
         {/* Center: Menubar */}
@@ -49,47 +62,31 @@ export default function DocumentEditorPage({ params }: { params: { id: string } 
 
         {/* Right: Status & Actions */}
         <div className="flex items-center justify-end gap-3 w-1/3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full border border-green-200">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-            All changes saved
-          </div>
-          <Button variant="primary" size="sm" className="gap-2 rounded-full px-4 h-8">
-            Share
+          
+          {/* OVERLAPPING AVATARS GO HERE */}
+          <Presence documentId={id} />
+
+          {/* NEW SAVE BUTTON */}
+          <Button variant="primary" size="sm" className="gap-2 rounded-full px-6 h-8 font-medium">
+            Save
           </Button>
-          <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-sm font-bold border border-slate-200 shadow-sm cursor-pointer hover:ring-2 ring-blue-500 ring-offset-2 transition-all">
-            HK
+          
+          <div className="w-px h-6 bg-slate-200 mx-1 hidden sm:block" /> {/* Divider */}
+
+          <div 
+            className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-sm font-bold border border-slate-200 shadow-sm cursor-pointer hover:ring-2 ring-blue-500 ring-offset-2 transition-all"
+            title={user?.email} 
+          >
+            {initials}
           </div>
         </div>
       </header>
 
       {/* 2. FORMATTING TOOLBAR */}
-      <div className="flex items-center gap-1 px-4 py-1.5 border-b border-slate-200 bg-slate-50 shrink-0 overflow-x-auto no-scrollbar">
-        <button className="p-1.5 text-slate-600 hover:bg-slate-200 rounded-md transition-colors"><ArrowUturnLeftIcon className="w-4 h-4" /></button>
-        <button className="p-1.5 text-slate-600 hover:bg-slate-200 rounded-md transition-colors"><ArrowUturnRightIcon className="w-4 h-4" /></button>
-        
-        <div className="w-px h-5 bg-slate-300 mx-2" />
-        
-        <button className="p-1.5 text-slate-600 hover:bg-slate-200 rounded-md transition-colors font-serif font-bold text-sm">B</button>
-        <button className="p-1.5 text-slate-600 hover:bg-slate-200 rounded-md transition-colors font-serif italic text-sm">I</button>
-        <button className="p-1.5 text-slate-600 hover:bg-slate-200 rounded-md transition-colors font-serif underline text-sm">U</button>
-        
-        <div className="w-px h-5 bg-slate-300 mx-2" />
-        
-        {/* Placeholder for text alignment and other tools */}
-        <div className="text-xs text-slate-400 italic px-2">More tools...</div>
-      </div>
+      <Toolbar />
 
       {/* 3. FORMULA BAR */}
-      <div className="flex items-center border-b border-slate-200 bg-white shrink-0">
-        <div className="w-10 flex justify-center py-1.5 border-r border-slate-200 bg-slate-50 shrink-0">
-          <span className="text-slate-400 font-serif italic text-sm">fx</span>
-        </div>
-        <input 
-          type="text" 
-          placeholder="Enter value or formula..."
-          className="flex-1 px-3 py-1.5 text-sm outline-none font-mono text-slate-800"
-        />
-      </div>
+      <FormulaBar />
 
       {/* 4. SPREADSHEET GRID (Placeholder) */}
       <Grid />
