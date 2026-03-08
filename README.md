@@ -30,3 +30,22 @@ Follow these steps to set up the project locally on your machine.
 ```bash
 git clone [https://github.com/your-username/minimal-sheet.git](https://github.com/your-username/minimal-sheet.git)
 cd minimal-sheet
+```
+### 2. Install dependencies
+```bash
+npm install
+```
+### 3. Set up Environment Variables
+Create a .env.local file in the root directory of the project and add the following variables. You will need a free MongoDB Atlas cluster to get your connection string.
+```bash
+# MongoDB Atlas Connection String
+MONGODB_URI="mongodb+srv://<username>:<password>@cluster0.mongodb.net/minimalsheet?retryWrites=true&w=majority"
+
+# Better Auth Configuration
+BETTER_AUTH_SECRET="generate-a-random-secret-string-here"
+BETTER_AUTH_URL="http://localhost:3000"
+```
+### 4. Run the development server
+```bash
+npm run dev
+```
